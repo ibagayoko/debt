@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class CustomersController extends Controller
+class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +15,7 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        //
+        return Customer::with('accounts')->get();
     }
 
     /**
@@ -35,7 +36,13 @@ class CustomersController extends Controller
      */
     public function store(Request $request)
     {
-        Customer::create(['name' => $request->input('name')]);
+        $data = Validator::make($request->toArray(), [
+            'name'  => 'required|string|max:40',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|max:15'
+        ])->validate();
+
+        Customer::create($data);
     }
 
     /**
@@ -44,9 +51,10 @@ class CustomersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Customer $customer)
     {
-        //
+        $customer->load('accounts');
+        return $customer;
     }
 
     /**
@@ -69,7 +77,17 @@ class CustomersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = Validator::make($request->toArray(), [
+            'name'  => 'filled|string|max:40',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|max:15'
+        ])->validate();
+        
+        $customer = Customer::find($id);
+        $customer->update($data);
+        // $customer->touch();
+
+        return $customer;
     }
 
     /**
@@ -80,6 +98,6 @@ class CustomersController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Customer::destroy($id);
     }
 }
