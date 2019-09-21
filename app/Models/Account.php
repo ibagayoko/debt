@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\CanBeFilter;
 use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
+    use CanBeFilter;
     //
     protected $guarded =[];
     // protected $with = ['customer'];

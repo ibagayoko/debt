@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->registerHelpers();
     }
 
     /**
@@ -24,5 +24,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+    }
+
+    public function registerHelpers()
+    {
+        foreach (glob(app_path() . '/Helpers/*.php') as $file) {
+            require_once($file);
+        }
     }
 }

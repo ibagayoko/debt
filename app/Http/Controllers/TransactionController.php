@@ -15,9 +15,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = app(Pipeline::class)
-            ->send(Transaction::query())
-            ->through([
+        $transactions = Transaction::filter([
                 \App\Filters\ByAccount::class,
                 \App\Filters\AmountLess::class,
                 \App\Filters\AmountMore::class,
@@ -26,7 +24,6 @@ class TransactionController extends Controller
                 \App\Filters\ByDate::class,
                 \App\Filters\OrderBy::class,
                 ])
-            ->thenReturn()
             ->get();
         
         return $transactions;

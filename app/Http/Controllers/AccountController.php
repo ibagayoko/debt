@@ -16,9 +16,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        $accounts = app(Pipeline::class)
-        ->send(Account::query())
-        ->through([
+        $accounts = Account::filter([
             \App\Filters\ByCustomer::class,
             \App\Filters\AmountLess::class,
             \App\Filters\AmountMore::class,
@@ -27,7 +25,6 @@ class AccountController extends Controller
             \App\Filters\ByDate::class,
             \App\Filters\OrderBy::class,
             ])
-        ->thenReturn()
         ->with('customer')
         ->get();
         
